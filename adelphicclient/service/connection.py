@@ -1,6 +1,8 @@
 import requests
 import json
 
+from requests.auth import HTTPBasicAuth
+
 class Connection:
 
     url_live = "https://api.adelphic.com/v1"
@@ -13,3 +15,6 @@ class Connection:
             self.url = self.url_demo
         else:
             self.url = self.url_live
+
+    def authenticate(self):
+        return HTTPBasicAuth(self.username, self.password)

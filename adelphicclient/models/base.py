@@ -9,10 +9,21 @@ class Base:
     def __init__(self, connection=None):
         self.connection = connection
 
+    def get_by_id(self, endpoint):
+        url = "{0}/{1}/{2}".format(self.connection.url, self.object, endpoint)
+        response = requests.get(
+            url,
+            auth=self.connection.authenticate(),
+            verify=False
+        )
+
+        return self.get_response_object(response)
+
     def list_objects(self, url_params):
         url = "{0}/{1}/{2}".format(self.connection.url, self.object, url_params)
         response = requests.get(
             url,
+            auth=self.connection.authenticate(),
             verify=False
         )
 
@@ -26,7 +37,7 @@ class Base:
         if response.status_code == 200:
             rval["msg_type"] = "success"
             rval["msg"] = ""
-            rval["data"] = data.get('items')
+            rval["data"] = data.get('entity')
             rval["request_body"] = ""
         else:
             rval["msg_type"] = "error"
@@ -44,7 +55,7 @@ class Base:
         if response.status_code == 200:
             rval["msg_type"] = "success"
             rval["msg"] = ""
-            rval["data"] = data
+            rval["data"] = data.get('entity')
             rval["request_body"] = ""
         else:
             rval["msg_type"] = "error"
