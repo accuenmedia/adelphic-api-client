@@ -17,13 +17,3 @@ class AdOrder(Base):
         )
 
         return self.get_response_list(response)
-
-    def get_creatives(self, id):
-        url = "{0}/{1}/{2}/creatives".format(self.connection.url, self.object, id)
-        response = requests.get(
-            url,
-            auth=self.connection.authenticate(),
-            verify=False
-        )
-
-        return self.get_response_list(response)
