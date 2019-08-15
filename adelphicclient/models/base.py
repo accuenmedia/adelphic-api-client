@@ -11,39 +11,46 @@ class Base:
 
     def get_by_id(self, endpoint):
         url = "{0}/{1}/{2}".format(self.connection.url, self.object, endpoint)
-        response = requests.get(
-            url,
-            auth=self.connection.authenticate(),
-            verify=False
-        )
+        response = self.make_request("GET", url)
 
         return self.get_response_object(response)
 
     def list_objects(self, url_params):
         url = "{0}/{1}/{2}".format(self.connection.url, self.object, url_params)
-        response = requests.get(
-            url,
-            auth=self.connection.authenticate(),
-            verify=False
-        )
+        response = self.make_request("GET", url)
 
         return self.get_response_list(response)
+
+    def make_request(self, method, url):
+        headers = self.connection.authenticate()
+
+        if method == "GET":
+            self.curl = "curl -H 'Content-Type: application/json' -H 'Authorization:Basic {0}' '{1}'".format(
+                headers,
+                url
+            )
+            response = requests.get(
+                url,
+                auth=headers,
+                verify=False
+            )
+
+        return response
 
     def get_response_list(self, response):
         data = json.loads(response.text)
 
         rval = {}
         rval["response_code"] = response.status_code
+        rval["request_body"] = self.curl
         if response.status_code == 200:
             rval["msg_type"] = "success"
-            rval["msg"] = ""
+            rval["msg"] = "Success"
             rval["data"] = data.get('entity')
-            rval["request_body"] = ""
         else:
             rval["msg_type"] = "error"
             rval["msg"] = data.get('message')
             rval["data"] = data.get('errors')
-            rval["request_body"] = ""
 
         return json.dumps(rval)
 
@@ -52,15 +59,14 @@ class Base:
 
         rval = {}
         rval["response_code"] = response.status_code
+        rval["request_body"] = self.curl
         if response.status_code == 200:
             rval["msg_type"] = "success"
-            rval["msg"] = ""
+            rval["msg"] = "Success"
             rval["data"] = data.get('entity')
-            rval["request_body"] = ""
         else:
             rval["msg_type"] = "error"
             rval["msg"] = data.get('message')
             rval["data"] = data.get('errors')
-            rval["request_body"] = ""
 
         return json.dumps(rval)

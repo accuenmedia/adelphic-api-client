@@ -10,10 +10,6 @@ class AdOrder(Base):
 
     def find_by_campaign(self, id):
         url = "{0}/{1}/getAdOrdersByCampaign?id={2}".format(self.connection.url, self.object, id)
-        response = requests.get(
-            url,
-            auth=self.connection.authenticate(),
-            verify=False
-        )
+        response = self.make_request("GET", url)
 
         return self.get_response_list(response)
