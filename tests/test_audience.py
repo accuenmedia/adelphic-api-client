@@ -30,5 +30,7 @@ class AdOrderTestCase(unittest.TestCase):
         audience_string = audience_service.update(1220142, 1624662)
         audience = json.loads(audience_string)
 
+        print(audience)
+
         self.assertEqual(audience["response_code"], 200)
         self.assertEqual(len(audience["data"]), 5)
