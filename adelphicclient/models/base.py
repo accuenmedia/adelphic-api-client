@@ -21,7 +21,7 @@ class Base:
 
         return self.get_response_list(response)
 
-    def make_request(self, method, url):
+    def make_request(self, method, url, data=None):
         headers = self.connection.authenticate()
 
         if method == "GET":
@@ -32,6 +32,20 @@ class Base:
             response = requests.get(
                 url,
                 auth=headers,
+                verify=False
+            )
+
+        if method == "POST":
+            self.curl = "curl -H 'Content-Type: application/json' -H 'Authorization:Basic {0}' --data '{1}' '{2}'".format(
+                headers,
+                data,
+                url
+            )
+            response = requests.post(
+                url,
+                auth=headers,
+                headers={"Content-Type": "application/json"},
+                data=data,
                 verify=False
             )
 
