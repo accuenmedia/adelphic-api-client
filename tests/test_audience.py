@@ -14,15 +14,21 @@ class AdOrderTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls.connection = Connection(config.USERNAME, config.PASSWORD)
 
-    def test_create(self):
+    # NOTE: this will create a new one every time, so only run as needed.
+    # def test_create(self):
+    #     audience_service = Audience(connection=self.connection)
+
+    #     audience_string = audience_service.create(1220142)
+    #     audience = json.loads(audience_string)
+
+    #     self.assertEqual(audience["response_code"], 200)
+    #     self.assertEqual(len(audience["data"]), 1)
+
+    def test_update(self):
         audience_service = Audience(connection=self.connection)
 
-        audience_string = audience_service.create(1220142)
+        audience_string = audience_service.update(1220142, 1624662)
         audience = json.loads(audience_string)
 
         self.assertEqual(audience["response_code"], 200)
-        self.assertEqual(len(audience["data"]), 1)
-
-    def test_get_by_id(self):
-        pass
-
+        self.assertEqual(len(audience["data"]), 5)
